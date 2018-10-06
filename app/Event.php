@@ -16,18 +16,29 @@ class Event extends Model
     	'is_active'
     ];
 
-    private function users()
+    public function users()
     {
     	return $this->belongsToMany(User::class);
     }
 
     public function setEventCreator(User $user)
     {
-    	$this->users()->attach($user,['is_admin'=>true]);
+    	$this->users()->attach($user,['is_creator'=>true]);
     }
 
-    public function addUser($user)
+    public function addUser(User $user)
     {
-    	$this->users()->attach($user);
+    	
+		$this->users()->attach($user,['is_creator'=>false]);		
+    }
+
+    public function hasUser(User $user)
+    {
+    	return $this->users->contains($user);
+    }
+
+    public function removeUser(User $user)
+    {
+    	return $this->users()->detach($user);
     }
 }

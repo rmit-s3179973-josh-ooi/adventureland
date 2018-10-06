@@ -27,7 +27,7 @@ class CreateEventsTable extends Migration
         Schema::create('event_user', function(Blueprint $table) {
             $table->unsignedInteger('user_id');
             $table->unsignedInteger('event_id');
-            $table->boolean('is_creator');
+            $table->boolean('is_creator')->default(0);
             $table->timestamps();
 
             $table->foreign('user_id')

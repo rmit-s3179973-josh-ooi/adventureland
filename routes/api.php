@@ -23,4 +23,7 @@ Route::post('register','API\UserController@register');
 Route::group(['middleware'=>'auth:api'], function(){
 	Route::post('user','API\UserController@details');
 	Route::post('event','API\EventController@create');
+	Route::post('event/{id}/join', 'API\EventController@join');
+	Route::get('event/{id}', 'API\EventController@view');
+	Route::put('event/{id}/exit', 'API\EventController@exit');
 });

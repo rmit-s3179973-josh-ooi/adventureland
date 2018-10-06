@@ -33,4 +33,9 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Event::class);
     }
+
+    public function getToken()
+    {
+        return $this->createToken($this->name)->accessToken;
+    }
 }

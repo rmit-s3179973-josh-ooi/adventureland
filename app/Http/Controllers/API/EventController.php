@@ -20,16 +20,15 @@ class EventController extends Controller
     	]);
 
     	if ($validator->fails()) { 
-	        return response()->json(['error'=>$validator->errors()], 401);            
+	        return response()->json(['error'=>$validator->errors()], 400);            
 	    }
 
 	    $event = Event::create([
 	    	'event_title' => $request->get('title'),
-	    	'event_description' => $request->get('title'),
-	    	'event_startdate' => $request->get('title'),
-	    	'event_enddate' => $request->get('title'),
-	    	'event_location' => $request->get('title'),
-	    	'event_title' => $request->get('title'),
+	    	'event_description' => $request->get('description'),
+	    	'start_datetime' => $request->get('start_date'),
+	    	'end_datetime' => $request->get('end_date'),
+	    	'event_location' => $request->get('location'),	    	
 	    	'is_active'=>true,
 	    ]);
 
@@ -38,7 +37,66 @@ class EventController extends Controller
 	    $event->setEventCreator($user);
 
 	    $success["message"] = "successfully created.";
-	    $succeds["event"] = $event;
-	    return response()->json(['success'=>$success], 200); 
+	    $success["event"] = $event;
+
+	    return response()->json(['success'=>$success], 201); 
+    }
+
+    public function join($id)
+    {
+    	
+    	$event = Event::find($id);	
+    	
+    	if(!$event) {
+    		return response()->json(['error'=>"Not Found"], 404); 
+    	}
+    	
+    	$user = Auth::user();
+    	
+    	$success["message"] = "Already a member of this event.";
+    	if(!$event->hasUser($user))
+    	{
+    		$event->addUser($user);
+    		$success["message"] = "Successfully Join Event.";
+    	}
+    	
+    	$success["event"] = $event;
+
+    	return response()->json(['success'=>$success], 200); 
+    }
+
+    public function view($id)
+    {
+    	$event = Event::find($id);	
+    	
+    	if(!$event) {
+    		return response()->json(['error'=>"Not Found"], 404); 
+    	}
+
+    	$success["event"] = $event;
+    	return response()->json(['success'=>$success], 200); 
+    }
+
+    public function exit($id)
+    {
+    	$event = Event::find($id);	
+    	
+    	if(!$event) {
+    		return response()->json(['error'=>"Not Found"], 404); 
+    	}
+
+    	$user = Auth::user();
+
+    	if($event->hasUser($user))
+    	{
+    		$event->removeUser($user);
+    	}else{
+    		return response()->json(['error'=>"Forbidden"], 403); 
+    	}
+    	
+    	$success["message"] = "Successfully exit Event.";
+    	$success["event"] = $event;
+
+    	return response()->json(['success'=>$success], 200); 
     }
 }
