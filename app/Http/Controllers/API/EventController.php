@@ -8,27 +8,40 @@ use Illuminate\Support\Facades\Auth;
 use Validator;
 use App\User; 
 use App\Event;
+use App\Category;
 
 class EventController extends Controller
 {
+	public function index(Request $request)
+	{
+		$events = Event::with(['category','users'])->get();		
+		$success['events'] = $events->toJson();
+		return response()->json($events,200);
+
+	}
+
     public function create(Request $request)
     {
     	$validator = Validator::make($request->all(),[
     		'title'=>'required',
     		'start_date'=>'required|date|after:tomorrow',
-    		'end_date' =>'required|date|after_or_equal:start_date'
+    		'end_date' =>'required|date|after_or_equal:start_date',
+            'category' =>'required'
     	]);
 
     	if ($validator->fails()) { 
 	        return response()->json(['error'=>$validator->errors()], 400);            
 	    }
 
+        $cat = Category::find($request->get('category'));
+
 	    $event = Event::create([
 	    	'event_title' => $request->get('title'),
 	    	'event_description' => $request->get('description'),
 	    	'start_datetime' => $request->get('start_date'),
 	    	'end_datetime' => $request->get('end_date'),
-	    	'event_location' => $request->get('location'),	    	
+	    	'event_location' => $request->get('location'),
+            'category_id' =>$cat->id,  	
 	    	'is_active'=>true,
 	    ]);
 
@@ -37,9 +50,9 @@ class EventController extends Controller
 	    $event->setEventCreator($user);
 
 	    $success["message"] = "successfully created.";
-	    $success["event"] = $event;
+	    $event = Event::with(['category','users'])->find($event->id);
 
-	    return response()->json(['success'=>$success], 201); 
+	    return response()->json(['event'=>$event], 201); 
     }
 
     public function join($id)
@@ -53,33 +66,32 @@ class EventController extends Controller
     	
     	$user = Auth::user();
     	
-    	$success["message"] = "Already a member of this event.";
+    	$message = "Already a member of this event.";
     	if(!$event->hasUser($user))
     	{
     		$event->addUser($user);
-    		$success["message"] = "Successfully Join Event.";
+    		$message = "Successfully Join Event.";
     	}
-    	
-    	$success["event"] = $event;
+    	    	
+        $event = Event::with(['category','users'])->find($id);
 
-    	return response()->json(['success'=>$success], 200); 
+    	return response()->json(['event'=>$event, 'message'=>$message], 200); 
     }
 
     public function view($id)
     {
-    	$event = Event::find($id);	
-    	
+    	$event = Event::with(['category','users'])->find($id);        
+
     	if(!$event) {
     		return response()->json(['error'=>"Not Found"], 404); 
     	}
-
-    	$success["event"] = $event;
-    	return response()->json(['success'=>$success], 200); 
+    	
+    	return response()->json(['event'=>$event], 200); 
     }
 
     public function exit($id)
     {
-    	$event = Event::find($id);	
+    	$event = Event::with(['category','users'])->find($id);	
     	
     	if(!$event) {
     		return response()->json(['error'=>"Not Found"], 404); 
@@ -94,9 +106,9 @@ class EventController extends Controller
     		return response()->json(['error'=>"Forbidden"], 403); 
     	}
     	
-    	$success["message"] = "Successfully exit Event.";
-    	$success["event"] = $event;
+    	$message = "Successfully exit Event.";
+    	$event = Event::with(['category','users'])->find($id);
 
-    	return response()->json(['success'=>$success], 200); 
+    	return response()->json(['message'=>$message, 'event'=>$event], 200); 
     }
 }

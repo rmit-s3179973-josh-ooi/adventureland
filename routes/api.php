@@ -19,11 +19,15 @@ use Illuminate\Http\Request;
 
 Route::post('login', 'API\UserController@login');
 Route::post('register','API\UserController@register');
+Route::get('events','API\EventController@index');
+Route::get('categories','API\CategoryController@index');
+Route::get('categories/{id}', 'API\CategoryController@fetch');
+Route::get('events/{id}', 'API\EventController@view');
+Route::get('users/{id}', 'API\UserController@fetch');
 
 Route::group(['middleware'=>'auth:api'], function(){
-	Route::post('user','API\UserController@details');
-	Route::post('event','API\EventController@create');
-	Route::post('event/{id}/join', 'API\EventController@join');
-	Route::get('event/{id}', 'API\EventController@view');
-	Route::put('event/{id}/exit', 'API\EventController@exit');
+	Route::get('users','API\UserController@details');
+	Route::post('events/new','API\EventController@create');
+	Route::post('events/{id}/join', 'API\EventController@join');	
+	Route::post('events/{id}/exit', 'API\EventController@exit');
 });

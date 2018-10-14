@@ -1,0 +1,527 @@
+swagger: "2.0"
+info:
+  description: "This is a server for adventureland. You can't access events/activities through these APIs"
+  version: "1.0.0"
+  title: "Adventureland"  
+host: "adventureland-218922.appspot.com"
+basePath: "/api"
+tags:
+- name: "event"
+  description: "Everything about events"
+- name: "category"
+  description: "Access to events' category"
+- name: "user"
+  description: "Operations about user"
+schemes:
+- "https"
+consumes:
+- "application/json"
+produces:
+- "application/json"
+paths:
+  "/event":
+    post:
+      tags:
+      - "event"
+      summary: "Add a new event to the system"
+      description: ""
+      operationId: "addEvent"
+      consumes:
+      - "application/json"
+      - "application/x-www-form-urlencoded"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "event_title"
+        in: "formData"
+        description: "title of the event"
+        required: true
+        type: "string"
+      - in: "formData"
+        name: "event_description"
+        description: "description of the event"
+        required: false
+        type: "string"
+      - in: "formData"
+        name: "event_startdate"
+        description: "Event start date"
+        required: true
+        type: "string"
+      - in: "formData"
+        name: "event_enddate"
+        description: "event end date"
+        required: true
+        type: "string"
+      - in: "formData"
+        name: "location"
+        description: "location of the event"
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Event"
+        405:
+          description: "Invalid input"      
+  "/events":
+    get:
+      tags:
+      - "event"
+      summary: "get all events"
+      description: ""
+      operationId: "getAllEvents"
+      produces:
+      - "application/xml"
+      - "application/json"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "array"
+            items: 
+              $ref: "#/definitions/Event"
+        400:
+          description: "invalid operation"      
+  "/event/{id}":
+    get:
+      tags:
+      - "event"
+      summary: "get event by id"
+      description: ""
+      operationId: "getEventById"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "event id"
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Event"
+        400:
+          description: "Invalid status value"      
+    put:
+      tags:
+      - "event"
+      summary: "update event by id"
+      description: ""
+      operationId: "updateEventById"
+      produces:
+        - "application/xml"
+        - "application/json"
+      consumes:
+      - "application/json"
+      - "application/x-www-form-urlencoded"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "event id"
+        required: true
+        type: "integer"
+        format: "int64"
+      - name: "event_title"
+        in: "formData"
+        description: "title of the event"
+        required: true
+        type: "string"
+      - in: "formData"
+        name: "event_description"
+        description: "description of the event"
+        required: false
+        type: "string"
+      - in: "formData"
+        name: "event_startdate"
+        description: "Event start date"
+        required: true
+        type: "string"
+      - in: "formData"
+        name: "event_enddate"
+        description: "event end date"
+        required: true
+        type: "string"
+      - in: "formData"
+        name: "location"
+        description: "location of the event"
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Event"      
+  "/event/{id}/join":
+    post:
+      tags:
+      - "event"
+      summary: "Join an event"
+      description: "Allow user to join an event"
+      operationId: "joinEvent"
+      produces: 
+      - "application/xml"
+      - "application/json"
+      consumes: 
+      - "application/xml"
+      - "application/json"
+      parameters: 
+      - name: "id"
+        in: "path"
+        description: "id of the event"
+        type: "integer"
+        format: "int64"
+        required: true
+      - name: "user_id"
+        in: "body"
+        description: "id of the user"
+        required: true
+        schema:
+          $ref: "#/definitions/User"
+      - name: "authorization"
+        in: "header"
+        type: "integer"
+        format: "int64"
+        required: true
+      responses:
+        200:
+          description: "successful operation"
+        403:
+          description: "unauthorize operation"      
+  "/event/{id}/exit":
+    put:
+      tags:
+      - "event"
+      summary: "exit an event"
+      description: "exit an event by id"
+      operationId: "exitEvent"
+      produces: 
+      - "application/xml"
+      - "application/json"
+      consumes: 
+      - "application/xml"
+      - "application/json"
+      parameters: 
+      - name: "id"
+        in: "path"
+        description: "id of the event"
+        type: "integer"
+        format: "int64"
+        required: true
+      - name: "user_id"
+        in: "body"
+        description: "id of the user"
+        required: true
+        schema:
+          $ref: "#/definitions/User"
+      - name: "authorization"
+        in: "header"
+        type: "integer"
+        format: "int64"
+        required: true
+      responses:
+        '200':
+          description: "successful operation"
+        '400':
+          description: "invalid operation"      
+  "/user":
+    post:
+      tags:
+      - "user"
+      summary: "retrieve loggrd in user information"
+      operationId: "getUserDetails"
+      description: ""
+      produces: 
+      - "application/xml"
+      - "application/json"
+      consumes: 
+      - "application/xml"
+      - "application/json"
+      parameters: 
+      - name: "authorization"
+        in: "header"
+        type: "integer"
+        format: "int64"
+        required: true
+      responses:
+        '200':
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/User"
+        '403':
+          description: "unauthorize action"
+  "/user/login":
+    get:
+      tags:
+      - "user"
+      summary: "Logs user into the system"
+      description: ""
+      operationId: "loginUser"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "email"
+        in: "query"
+        description: "The user name for login"
+        required: true
+        type: "string"
+      - name: "password"
+        in: "query"
+        description: "The password for login in clear text"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "string"
+          headers:
+            X-Rate-Limit:
+              type: "integer"
+              format: "int32"
+              description: "calls per hour allowed by the user"
+            X-Expires-After:
+              type: "string"
+              format: "date-time"
+              description: "date in UTC when token expires"
+        400:
+          description: "Invalid username/password supplied"
+  "/user/logout":
+    get:
+      tags:
+      - "user"
+      summary: "Logs out current logged in user session"
+      description: ""
+      operationId: "logoutUser"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters: []
+      responses:
+        default:
+          description: "successful operation"      
+  "/user/{id}":
+    get:
+      tags:
+      - "user"
+      summary: "Get user by user name"
+      description: ""
+      operationId: "getUserByName"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "The id that needs to be fetched. "
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/User"
+        400:
+          description: "Invalid username supplied"
+        404:
+          description: "User not found"      
+    put:
+      tags:
+      - "user"
+      summary: "Updated user"
+      description: "This can only be done by the logged in user."
+      operationId: "updateUser"
+      produces:
+      - "application/xml"
+      - "application/json"
+      consumes:
+      - "application/xml"
+      - "application/json"
+      - "application/x-www-form-urlencoded"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "name that need to be updated"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "body"
+        description: "Updated user object"
+        required: true
+        schema:
+          $ref: "#/definitions/User"
+      responses:
+        400:
+          description: "Invalid user supplied"
+        404:
+          description: "User not found"      
+    delete:
+      tags:
+      - "user"
+      summary: "Delete user"
+      description: "This can only be done by the logged in user."
+      operationId: "deleteUser"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "The name that needs to be deleted"
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        400:
+          description: "Invalid username supplied"
+        404:
+          description: "User not found"      
+  "/user/register":
+    post:
+      tags:
+      - "user"
+      summary: "Updated user"
+      description: "This can only be done by the logged in user."
+      operationId: "createUser"
+      produces:
+      - "application/xml"
+      - "application/json"
+      consumes:
+      - "application/xml"
+      - "application/json"
+      - "application/x-www-form-urlencoded"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Updated user object"
+        required: true
+        schema:
+          $ref: "#/definitions/User"
+      responses:
+        400:
+          description: "Invalid user supplied"
+        404:
+          description: "User not found"      
+  "/categories":
+    get:
+      tags:
+      - "category"
+      summary: "get All categories"
+      description: ""
+      operationId: "getCategories"
+      produces:
+      - "application/xml"
+      - "application/json"
+      responses:
+        200:
+          description: "successful Operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Category"
+        400:
+          description: "invalid operation"
+  "/category/{id}":
+    get:
+      tags:
+      - "category"
+      summary: "get all events base on category"
+      description: ""
+      operationId: "getEventByCategoryId"
+      produces:
+      - "application/xml"
+      - "application/json"
+      consumes:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Event"
+        400:
+          description: "invalid operation"              
+securityDefinitions:
+  adventureland_auth:
+    type: "oauth2"
+    authorizationUrl: "https://adventureland-218922.appspot.com/oauth/authorization"
+    flow: "implicit"
+    scopes:
+      read: "read"
+      write: "write"
+  api_key:
+    name: "key"
+    in: "query"
+    type: "apiKey"
+definitions:
+  Category:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      name:
+        type: "string"
+    xml:
+      name: "Category"
+  User:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      name:
+        type: "string"
+      email:
+        type: "string"      
+      userStatus:
+        type: "integer"
+        format: "int32"
+        description: "User Status"
+    xml:
+      name: "User"
+  Event:
+    type: "object"
+    required: 
+    - "event_title"
+    - "start_date"
+    - "end_date"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      category:
+        $ref: "#/definitions/Category"
+      event_title:
+        type: "string"
+      event_description:
+        type: "string"
+      start_date:
+        type: "string"
+      end_date:
+        type: "string"
+      location:
+        type: "string"
+      users:
+        type: "array"
+        items:
+          $ref: "#/definitions/User"
+    xml:
+      name: "Event"
+externalDocs:
+  description: "Find out more about Swagger"
+  url: "http://swagger.io"

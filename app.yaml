@@ -1,0 +1,33 @@
+runtime: php
+env: flex
+
+runtime_config:
+  document_root: public
+
+# Ensure we skip ".env", which is only for local development
+skip_files:
+  - .env
+
+env_variables:
+  # Put production environment variables here.
+  APP_ENV: production
+  APP_LOG: daily
+  APP_DEBUG: true
+  APP_KEY: base64:5Aq15EXn4xVz9MCpeBnr0mYMWubRUm+1BUw5cQphJhI=
+  STORAGE_DIR: /tmp
+
+  CACHE_DRIVER: file
+  SESSION_DRIVER: database
+
+  ## Set these environment variables according to your CloudSQL configuration.
+  DB_CONNECTION: mysql
+  DB_HOST: localhost
+  DB_DATABASE: adventureland
+  DB_USERNAME: root
+  DB_PASSWORD: nhdeAuwyOr5vE5IF
+  DB_SOCKET: "/cloudsql/adventureland-218922:australia-southeast1:adventureland"
+
+beta_settings:
+    # for Cloud SQL, set this value to the Cloud SQL connection name,
+    # e.g. "project:region:cloudsql-instance"
+    cloud_sql_instances: "adventureland-218922:australia-southeast1:adventureland"

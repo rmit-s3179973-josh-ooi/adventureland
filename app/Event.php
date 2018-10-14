@@ -13,8 +13,11 @@ class Event extends Model
     	'location',
     	'start_datetime',
     	'end_datetime',
-    	'is_active'
+    	'is_active',
+        'category_id'
     ];
+
+    protected $appends = ['type'];
 
     public function users()
     {
@@ -40,5 +43,15 @@ class Event extends Model
     public function removeUser(User $user)
     {
     	return $this->users()->detach($user);
+    }
+
+    public function category()
+    {
+    	return $this->belongsTo(Category::class);
+    }
+
+    public function getTypeAttribute()
+    {
+        return $this->attributes['type'] = 'event';
     }
 }
