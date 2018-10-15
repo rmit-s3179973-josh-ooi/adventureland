@@ -13,7 +13,7 @@ env_variables:
   APP_ENV: production
   APP_LOG: daily
   APP_DEBUG: true
-  APP_KEY: base64:5Aq15EXn4xVz9MCpeBnr0mYMWubRUm+1BUw5cQphJhI=
+  APP_KEY: YOUR_APP_KEY
   STORAGE_DIR: /tmp
 
   CACHE_DRIVER: file
@@ -22,12 +22,12 @@ env_variables:
   ## Set these environment variables according to your CloudSQL configuration.
   DB_CONNECTION: mysql
   DB_HOST: localhost
-  DB_DATABASE: adventureland
+  DB_DATABASE: DATABASE_NAME
   DB_USERNAME: root
-  DB_PASSWORD: nhdeAuwyOr5vE5IF
-  DB_SOCKET: "/cloudsql/adventureland-218922:australia-southeast1:adventureland"
+  DB_PASSWORD: PASSWORD
+  DB_SOCKET: "/cloudsql/YOUR_CLOUDSQL_CONNECTION_NAME"
 
 beta_settings:
     # for Cloud SQL, set this value to the Cloud SQL connection name,
     # e.g. "project:region:cloudsql-instance"
-    cloud_sql_instances: "adventureland-218922:australia-southeast1:adventureland"
+    cloud_sql_instances: "YOUR_CLOUDSQL_CONNECTION_NAME"
